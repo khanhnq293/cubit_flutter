@@ -1,4 +1,3 @@
-import 'package:bloc_project/authentic/home_screen.dart';
 import 'package:bloc_project/common/button.dart';
 import 'package:bloc_project/common/text_input.dart';
 import 'package:bloc_project/common/text_input_pass.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../model/user.dart';
+import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
