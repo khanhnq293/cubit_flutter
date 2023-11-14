@@ -1,7 +1,7 @@
 import 'package:bloc_project/common/button.dart';
 import 'package:bloc_project/common/text_input.dart';
 import 'package:bloc_project/cubit/todo_dart_cubit.dart';
-import 'package:bloc_project/pages/sign_in_screen.dart';
+import 'package:bloc_project/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../components/home_screen/header_bar.dart';
@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SignInScreen()));
+                          builder: (context) => const MyApp()));
                 }
               },
               color: Colors.white,
