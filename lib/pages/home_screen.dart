@@ -2,6 +2,7 @@ import 'package:bloc_project/common/button.dart';
 import 'package:bloc_project/common/text_input.dart';
 import 'package:bloc_project/cubit/todo_dart_cubit.dart';
 import 'package:bloc_project/main.dart';
+import 'package:bloc_project/shared_preferences/shared_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../components/home_screen/header_bar.dart';
@@ -20,6 +21,7 @@ enum Options {
 enum ActionsDoing { add, update }
 
 class HomeScreen extends StatelessWidget {
+
   const HomeScreen({super.key});
 
   @override
@@ -33,10 +35,9 @@ class HomeScreen extends StatelessWidget {
             PopupMenuButton<String>(
               onSelected: (value) {
                 if (value == "0") {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyApp()));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => const MyApp()));
+                  SharedPreferencesUser.clearUser();
                 }
               },
               color: Colors.white,
@@ -89,7 +90,7 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFF80CBC4),
-          onPressed: () {
+          onPressed: () async {
             showInputDialog(context, "Add something", "Add",
                 actions: ActionsDoing.add);
           },

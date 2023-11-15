@@ -1,9 +1,13 @@
+import 'package:bloc_project/cubit/loading_cubit.dart';
 import 'package:bloc_project/cubit/todo_dart_cubit.dart';
 import 'package:bloc_project/cubit/user_cubit.dart';
 import 'package:bloc_project/cubit/users_cubit.dart';
 import 'package:bloc_project/layout/layout_authentic.dart';
+import 'package:bloc_project/model/user.dart';
+import 'package:bloc_project/pages/home_screen.dart';
 import 'package:bloc_project/pages/sign_in_screen.dart';
 import 'package:bloc_project/pages/sign_up_screen.dart';
+import 'package:bloc_project/shared_preferences/shared_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +26,8 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (_) => UserCubit()),
           BlocProvider(create: (_) => UsersCubit()),
-          BlocProvider(create: (_) => TodoDartCubit())
+          BlocProvider(create: (_) => TodoDartCubit()),
+          BlocProvider(create: (_) => LoadingCubit()),
         ],
         child: MaterialApp(
             title: 'Flutter Demo',
@@ -57,12 +62,35 @@ class _TemplateAuthenticState extends State<TemplateAuthentic> {
     });
   }
 
+  void signIn(user) {
+    context.read<UserCubit>().signIn(user);
+  }
+
+  Future<bool> isAuthentic() async {
+    User user = await SharedPreferencesUser.getUser();
+    if (user.userName.isEmpty && user.password.isEmpty) {
+      return false;
+    }
+    signIn(user);
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: LayoutAuthentic(
-      navigate: navigate,
-      child: getAuthScreen(),
+        body: FutureBuilder(
+      future: isAuthentic(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return LayoutAuthentic(navigate: navigate, child: getAuthScreen());
+        } else {
+          return (snapshot.data ?? false)
+              ? const HomeScreen()
+              : LayoutAuthentic(navigate: navigate, child: getAuthScreen());
+        }
+      },
     ));
   }
 }

@@ -2,12 +2,15 @@ import 'package:bloc_project/common/button.dart';
 import 'package:bloc_project/common/snack_bar.dart';
 import 'package:bloc_project/common/text_input.dart';
 import 'package:bloc_project/common/text_input_pass.dart';
+import 'package:bloc_project/cubit/loading_cubit.dart';
 import 'package:bloc_project/cubit/user_cubit.dart';
 import 'package:bloc_project/cubit/users_cubit.dart';
 import 'package:bloc_project/main.dart';
+import 'package:bloc_project/shared_preferences/shared_user.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/user.dart';
 import 'home_screen.dart';
@@ -25,6 +28,7 @@ class _SignInScreenState extends State<SignInScreen> {
   late bool isErrorPassword;
   TextEditingController userName = TextEditingController();
   TextEditingController pass = TextEditingController();
+  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   final snackBar = SnackBar(
     content: const Text('Oh! Account or password is incorrect'),
     action: SnackBarAction(
@@ -48,17 +52,21 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
-  void signInUser(User user) {
+  Future<void> signInUser(User user) async {
     List<User> users = context.read<UsersCubit>().getUsers();
     for (User element in users) {
       if (user.userName == element.userName &&
           user.password == element.password) {
         context.read<UserCubit>().signIn(user);
+        context.read<LoadingCubit>().setUnLoading();
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const HomeScreen()));
+
+        SharedPreferencesUser.saveUser(user);
         return;
       }
     }
+    context.read<LoadingCubit>().setUnLoading();
     ScaffoldMessenger.of(context).showSnackBar(AppSnackBar(
       content: const Text("Oh! account or password is incorrect"),
       action: SnackBarAction(
@@ -67,7 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void validatePassword() {
-    if (pass.text.isEmpty || pass.text.length < 8) {
+    if (pass.text.length < 8) {
       setState(() {
         isErrorPassword = true;
       });
@@ -91,7 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   bool validateButton() {
-    if (pass.text.isEmpty || userName.text.isEmpty || pass.text.length < 8) {
+    if (userName.text.isEmpty || pass.text.length < 8) {
       return false;
     }
     return true;
@@ -131,7 +139,8 @@ class _SignInScreenState extends State<SignInScreen> {
         AppButton(
             title: "SIGN IN",
             onPress: validateButton()
-                ? () {
+                ? () async {
+                    context.read<LoadingCubit>().setLoading();
                     signInUser(User(userName.text, pass.text));
                     FocusScope.of(context).unfocus();
                   }

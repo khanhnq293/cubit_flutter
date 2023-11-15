@@ -33,6 +33,7 @@ class _AppTextInputPassState extends State<AppTextInputPass> {
       child: TextField(
         controller: widget.value,
         onChanged: (value) => widget.valueChange?.call(),
+      
         obscureText: !isVisibility,
         decoration: InputDecoration(
             labelText: widget.title,

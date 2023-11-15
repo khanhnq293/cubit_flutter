@@ -1,5 +1,7 @@
+import 'package:bloc_project/cubit/loading_cubit.dart';
 import 'package:bloc_project/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LayoutAuthentic extends StatefulWidget {
   final Widget child;
@@ -51,15 +53,17 @@ class _LayoutAuthenticState extends State<LayoutAuthentic> {
             ),
           ),
         ),
-        Visibility(
-          visible: widget.isLoading,
-          child: Container(
-              alignment: Alignment.center,
-              color: Colors.black26,
-              child: const CircularProgressIndicator(
-                backgroundColor: Colors.white70,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF80CBC4)),
-              )),
+        BlocBuilder<LoadingCubit, bool>(
+          builder: (context, state) {
+            if (state) {
+              return Container(
+                  color: Colors.black12,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator());
+            } else {
+              return const SizedBox();
+            }
+          },
         )
       ],
     );

@@ -7,6 +7,7 @@ import 'package:bloc_project/cubit/users_cubit.dart';
 import 'package:bloc_project/main.dart';
 import 'package:bloc_project/model/user.dart';
 import 'package:bloc_project/pages/home_screen.dart';
+import 'package:bloc_project/shared_preferences/shared_user.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  void signInUser(User user) {
+  void signUpUser(User user) {
     List<User> users = context.read<UsersCubit>().getUsers();
     for (User element in users) {
       if (user.userName == element.userName) {
@@ -62,10 +63,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     context.read<UsersCubit>().signUp(user);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+    SharedPreferencesUser.saveUser(user);
   }
 
   void validatePassword() {
-    if (pass.text.isEmpty || pass.text.length < 8) {
+    if (pass.text.length < 8 || !pass.text.contains(RegExp(r'[A-Z]'))) {
       setState(() {
         isErrorPassword = true;
       });
@@ -77,7 +79,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void validateConfirmPass() {
-    if (conFirmPass.text.isEmpty || (conFirmPass.text != pass.text)) {
+    if (conFirmPass.text != pass.text ||
+        conFirmPass.text.length < 8 ||
+        !pass.text.contains(RegExp(r'[A-Z]'))) {
       setState(() {
         isErrorConfirmPass = true;
         isShowErrorConfirmPass = true;
@@ -103,10 +107,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   bool validateButton() {
-    if (pass.text.isEmpty ||
-        userName.text.isEmpty ||
+    if (userName.text.isEmpty ||
         pass.text.length < 8 ||
-        conFirmPass.text.isEmpty ||
         (conFirmPass.text != pass.text)) {
       return false;
     }
@@ -137,7 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                "*At least 8 characters",
+                "*At least 8 characters\n At least 1 uppercase letter",
                 style: TextStyle(color: Colors.grey[700]),
               ),
             )
@@ -171,7 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             title: "SIGN UP",
             onPress: validateButton()
                 ? () {
-                    signInUser(User(userName.text, pass.text));
+                    signUpUser(User(userName.text, pass.text));
                     FocusScope.of(context).unfocus();
                   }
                 : null),
