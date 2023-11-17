@@ -1,21 +1,19 @@
-import 'dart:convert';
-
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
+@CopyWith()
 @JsonSerializable()
 class User {
-  String userName;
-  String password;
+  final String userName;
+  final String password;
 
-  User(this.userName, this.password);
+  User({ this.userName = '', this.password = ''});
 
-  factory User.initial() => User("", "");
+  factory User.initial() => User();
 
-  User copyWith({String? userName, String? password}) {
-    return User(userName ?? this.userName, password ?? this.password);
-  }
+
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

@@ -164,7 +164,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               onPress: () => validateButton()
                   ? {
                       context.read<LoadingCubit>().setLoading(),
-                      signUpUser(User(userName.text, pass.text)),
+                      signUpUser(
+                          User(userName: userName.text, password: pass.text)),
                       FocusScope.of(context).unfocus(),
                     }
                   : null),

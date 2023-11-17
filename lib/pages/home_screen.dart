@@ -43,8 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("LIST HOME: ${todoCubit.state.doings}");
-
     return Scaffold(
       appBar: AppBar(
           backgroundColor: const Color(0xFF80CBC4),
@@ -73,14 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.grey[200],
           width: double.infinity,
           child: BlocBuilder<TodoDartCubit, DoingsState>(
-            // buildWhen: (previous, current) {
-            //   print(previous);
-            //   print("________________________________");
-            //   print(current);
-            //   return true;
-            // },
             builder: (context, state) {
-              print("LIST HOME2: ${state.doings}");
               return Container(
                 margin:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -90,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(10)),
                 child: ListView.separated(
                     itemBuilder: (context, index) {
-                      print('list homework: ${state.doings}');
                       return ItemDoing(
                           index: index,
                           createAtTime: state.doings[index].createAtTime,
@@ -127,18 +117,19 @@ Future showInputDialog(
   void actionFunction(value) {
     switch (value) {
       case ActionsDoing.add:
-        context
-            .read<TodoDartCubit>()
-            .addDoing(Doing(doSomeThing.text, false, DateTime.now()));
+        context.read<TodoDartCubit>().addDoing(Doing(
+            name: doSomeThing.text,
+            isDone: false,
+            createAtTime: DateTime.now()));
         Navigator.pop(context);
         return;
       case ActionsDoing.update:
         context.read<TodoDartCubit>().updateDoingTitle(
             index ?? 0,
             Doing(
-                doSomeThing.text,
-                false,
-                context
+                name: doSomeThing.text,
+                isDone: false,
+                createAtTime: context
                     .read<TodoDartCubit>()
                     .state
                     .doings

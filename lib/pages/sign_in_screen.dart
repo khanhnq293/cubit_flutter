@@ -103,7 +103,8 @@ class _SignInScreenState extends State<SignInScreen> {
               onPress: () => validateButton()
                   ? {
                       loadingCubit.setLoading(),
-                      signInUser(User(userName.text, pass.text)),
+                      signInUser(
+                          User(userName: userName.text, password: pass.text)),
                       FocusScope.of(context).unfocus()
                     }
                   : null),

@@ -1,13 +1,11 @@
 import 'package:bloc_project/model/user.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 List<User> users = [
-  User("khanh", "123123123A"),
-  User("qweewq", "123123123A"),
-  User("asddsa", "123123123A")
+  User(userName: "khanh", password: "123123123A"),
+  User(userName: "qweewq", password: "123123123A"),
+  User(userName: "asddsa", password: "123123123A")
 ];
-
 
 class UserCubit extends HydratedCubit<User> {
   UserCubit() : super(User.initial());
