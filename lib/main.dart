@@ -1,17 +1,19 @@
 import 'package:bloc_project/cubit/loading_cubit.dart';
 import 'package:bloc_project/cubit/todo_dart_cubit.dart';
-import 'package:bloc_project/cubit/user_cubit.dart';
-import 'package:bloc_project/cubit/users_cubit.dart';
+import 'package:bloc_project/cubit/user_cubit/user_cubit.dart';
 import 'package:bloc_project/layout/layout_authentic.dart';
-import 'package:bloc_project/model/user.dart';
 import 'package:bloc_project/pages/home_screen.dart';
 import 'package:bloc_project/pages/sign_in_screen.dart';
 import 'package:bloc_project/pages/sign_up_screen.dart';
-import 'package:bloc_project/shared_preferences/shared_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: await getTemporaryDirectory());
   runApp(const MyApp());
 }
 
@@ -25,7 +27,6 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => UserCubit()),
-          BlocProvider(create: (_) => UsersCubit()),
           BlocProvider(create: (_) => TodoDartCubit()),
           BlocProvider(create: (_) => LoadingCubit()),
         ],
@@ -45,6 +46,15 @@ class TemplateAuthentic extends StatefulWidget {
 
 class _TemplateAuthenticState extends State<TemplateAuthentic> {
   Screens screen = Screens.signIn;
+  late UserCubit userCubit;
+
+  @override
+  void initState() {
+    userCubit = UserCubit();
+
+    super.initState();
+  }
+
   Widget getAuthScreen() {
     switch (screen) {
       case Screens.signIn:
@@ -63,34 +73,20 @@ class _TemplateAuthenticState extends State<TemplateAuthentic> {
   }
 
   void signIn(user) {
-    context.read<UserCubit>().signIn(user);
+    userCubit.signIn(user);
   }
 
-  Future<bool> isAuthentic() async {
-    User user = await SharedPreferencesUser.getUser();
-    if (user.userName.isEmpty && user.password.isEmpty) {
+  bool isAuthentic() {
+    if (userCubit.state.userName.isEmpty || userCubit.state.password.isEmpty) {
       return false;
     }
-    signIn(user);
     return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: FutureBuilder(
-      future: isAuthentic(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return LayoutAuthentic(navigate: navigate, child: getAuthScreen());
-        } else {
-          return (snapshot.data ?? false)
-              ? const HomeScreen()
-              : LayoutAuthentic(navigate: navigate, child: getAuthScreen());
-        }
-      },
-    ));
+    return isAuthentic()
+        ? const HomeScreen()
+        : LayoutAuthentic(navigate: navigate, child: getAuthScreen());
   }
 }

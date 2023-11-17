@@ -20,52 +20,54 @@ class LayoutAuthentic extends StatefulWidget {
 class _LayoutAuthenticState extends State<LayoutAuthentic> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/images/background_animal.png"),
-                    fit: BoxFit.fill))),
-        SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                margin: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.08),
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade200.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.white.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 2,
-                          offset: const Offset(0, 2))
-                    ]),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [widget.child]),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/background_animal.png"),
+                      fit: BoxFit.fill))),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.08),
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade200.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.white.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 2,
+                            offset: const Offset(0, 2))
+                      ]),
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [widget.child]),
+                ),
               ),
             ),
           ),
-        ),
-        BlocBuilder<LoadingCubit, bool>(
-          builder: (context, state) {
-            if (state) {
-              return Container(
-                  color: Colors.black12,
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator());
-            } else {
-              return const SizedBox();
-            }
-          },
-        )
-      ],
+          BlocBuilder<LoadingCubit, bool>(
+            builder: (context, state) {
+              if (state) {
+                return Container(
+                    color: Colors.black12,
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator());
+              } else {
+                return const SizedBox();
+              }
+            },
+          )
+        ],
+      ),
     );
   }
 }

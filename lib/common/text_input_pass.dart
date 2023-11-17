@@ -4,14 +4,14 @@ class AppTextInputPass extends StatefulWidget {
   final String title;
   final bool isError;
   final TextEditingController value;
-  final VoidCallback? valueChange;
+  final String? Function(String?)? validate;
 
   const AppTextInputPass(
       {super.key,
       this.title = "",
       this.isError = false,
       required this.value,
-      this.valueChange});
+      this.validate});
 
   @override
   State<AppTextInputPass> createState() => _AppTextInputPassState();
@@ -30,10 +30,14 @@ class _AppTextInputPassState extends State<AppTextInputPass> {
               width: 2),
           color: Colors.white,
           borderRadius: BorderRadius.circular(10)),
-      child: TextField(
+      child: TextFormField(
         controller: widget.value,
-        onChanged: (value) => widget.valueChange?.call(),
-      
+        validator: (value) {
+          if (widget.validate != null) {
+            return widget.validate!(value);
+          }
+          return null;
+        },
         obscureText: !isVisibility,
         decoration: InputDecoration(
             labelText: widget.title,

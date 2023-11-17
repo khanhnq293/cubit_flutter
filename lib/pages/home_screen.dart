@@ -1,8 +1,9 @@
 import 'package:bloc_project/common/button.dart';
 import 'package:bloc_project/common/text_input.dart';
 import 'package:bloc_project/cubit/todo_dart_cubit.dart';
+import 'package:bloc_project/cubit/user_cubit/user_cubit.dart';
 import 'package:bloc_project/main.dart';
-import 'package:bloc_project/shared_preferences/shared_user.dart';
+import 'package:bloc_project/model/doings_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../components/home_screen/header_bar.dart';
@@ -20,12 +21,30 @@ enum Options {
 
 enum ActionsDoing { add, update }
 
-class HomeScreen extends StatelessWidget {
-
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late List<Doing> doings;
+  late UserCubit userCubit;
+  late TodoDartCubit todoCubit;
+
+  @override
+  void initState() {
+    userCubit = UserCubit();
+    todoCubit = TodoDartCubit();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("LIST HOME: ${todoCubit.state.doings}");
+
     return Scaffold(
       appBar: AppBar(
           backgroundColor: const Color(0xFF80CBC4),
@@ -35,9 +54,9 @@ class HomeScreen extends StatelessWidget {
             PopupMenuButton<String>(
               onSelected: (value) {
                 if (value == "0") {
+                  userCubit.logout();
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => const MyApp()));
-                  SharedPreferencesUser.clearUser();
                 }
               },
               color: Colors.white,
@@ -53,8 +72,15 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           color: Colors.grey[200],
           width: double.infinity,
-          child: BlocBuilder<TodoDartCubit, List<Doing>>(
+          child: BlocBuilder<TodoDartCubit, DoingsState>(
+            // buildWhen: (previous, current) {
+            //   print(previous);
+            //   print("________________________________");
+            //   print(current);
+            //   return true;
+            // },
             builder: (context, state) {
+              print("LIST HOME2: ${state.doings}");
               return Container(
                 margin:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -64,25 +90,17 @@ class HomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10)),
                 child: ListView.separated(
                     itemBuilder: (context, index) {
+                      print('list homework: ${state.doings}');
                       return ItemDoing(
                           index: index,
-                          createAtTime: context
-                              .read<TodoDartCubit>()
-                              .getDoings()[index]
-                              .createAtTime,
-                          isChecked: context
-                              .read<TodoDartCubit>()
-                              .getDoings()[index]
-                              .isDone,
-                          title: context
-                              .read<TodoDartCubit>()
-                              .getDoings()[index]
-                              .name);
+                          createAtTime: state.doings[index].createAtTime,
+                          isChecked: state.doings[index].isDone,
+                          title: state.doings[index].name);
                     },
                     separatorBuilder: (context, index) {
                       return const Divider(color: Colors.greenAccent);
                     },
-                    itemCount: context.read<TodoDartCubit>().getStateLength()),
+                    itemCount: state.doings.length),
               );
             },
           ),
@@ -122,7 +140,8 @@ Future showInputDialog(
                 false,
                 context
                     .read<TodoDartCubit>()
-                    .getDoings()
+                    .state
+                    .doings
                     .elementAt(index ?? 0)
                     .createAtTime));
         Navigator.pop(context);

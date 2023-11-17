@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user.g.dart';
+
+@JsonSerializable()
 class User {
   String userName;
   String password;
@@ -12,10 +17,7 @@ class User {
     return User(userName ?? this.userName, password ?? this.password);
   }
 
-  factory User.fromJson(String json) {
-    final Map<String, dynamic> user = jsonDecode(json);
-    return User(user['userName'], user['password']);
-  }
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  String toJson() => '{"userName": "$userName", "password": "$password"}';
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }

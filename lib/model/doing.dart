@@ -1,13 +1,16 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'doing.g.dart';
+
+@JsonSerializable()
 class Doing {
   final String name;
-  late bool _isDone;
+  final bool isDone;
   final DateTime createAtTime;
 
-  Doing(this.name, this._isDone,this.createAtTime);
+  const Doing(this.name, this.isDone, this.createAtTime);
 
-  bool get isDone => _isDone;
+  factory Doing.fromJson(Map<String, dynamic> json) => _$DoingFromJson(json);
 
-  set isDone(bool value) {
-    _isDone = value;
-  }
+  Map<String, dynamic> toJson() => _$DoingToJson(this);
 }

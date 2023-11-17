@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubit/user_cubit.dart';
+import '../../cubit/user_cubit/user_cubit.dart';
 import '../../model/user.dart';
 
 class HeaderBar extends StatelessWidget {
