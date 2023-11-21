@@ -1,7 +1,9 @@
+import 'package:bloc_project/cubit/drinking_cubit/cubit/drinking_cubit.dart';
 import 'package:bloc_project/cubit/loading_cubit.dart';
 import 'package:bloc_project/cubit/todo_dart_cubit.dart';
 import 'package:bloc_project/cubit/user_cubit/user_cubit.dart';
 import 'package:bloc_project/layout/layout_authentic.dart';
+import 'package:bloc_project/pages/drinking_screen.dart';
 import 'package:bloc_project/pages/home_screen.dart';
 import 'package:bloc_project/pages/sign_in_screen.dart';
 import 'package:bloc_project/pages/sign_up_screen.dart';
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (_) => UserCubit()),
           BlocProvider(create: (_) => TodoDartCubit()),
           BlocProvider(create: (_) => LoadingCubit()),
+          BlocProvider(create: (_) => DrinkingCubit())
         ],
         child: MaterialApp(
             title: 'Flutter Demo',
@@ -86,7 +89,7 @@ class _TemplateAuthenticState extends State<TemplateAuthentic> {
   @override
   Widget build(BuildContext context) {
     return isAuthentic()
-        ? const HomeScreen()
+        ? const DrinkingScreen()
         : LayoutAuthentic(navigate: navigate, child: getAuthScreen());
   }
 }
