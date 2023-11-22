@@ -31,7 +31,7 @@ class _DrinkingScreenState extends State<DrinkingScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 40),
+            const SizedBox(height: 60),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.6,
               child: BlocBuilder<DrinkingCubit, DrinkingState>(
@@ -118,8 +118,8 @@ Future showDialogAddDrinking(
                   drinkingCubit.addDrinking(Drinking(
                       id: const Uuid().v4(),
                       drinkingName: drinking.text,
-                      sugar: 100,
-                      ice: 100));
+                      sugar: 50,
+                      ice: 50));
                   Navigator.pop(context);
                 })
           ],

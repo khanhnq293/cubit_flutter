@@ -71,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.grey[200],
           width: double.infinity,
           child: BlocBuilder<TodoDartCubit, DoingsState>(
+            bloc: todoCubit,
             builder: (context, state) {
               return Container(
                 margin:
