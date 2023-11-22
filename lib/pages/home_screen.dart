@@ -208,7 +208,10 @@ Future showAlertDialog(BuildContext context, String title, String description,
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10))),
-              onPressed: () => onPress.call(),
+              onPressed: () {
+                onPress.call();
+                Navigator.pop(context);
+              },
               child:
                   const Text('OK', style: TextStyle(color: Color(0xFF80CBC4))),
             ),

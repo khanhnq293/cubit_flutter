@@ -20,7 +20,6 @@ class ItemDoing extends StatelessWidget {
 
   void deleteItem(BuildContext context, int index) {
     context.read<TodoDartCubit>().deleteDoing(index);
-    Navigator.pop(context);
   }
 
   @override
