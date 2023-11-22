@@ -4,17 +4,18 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class DrinkingCubit extends Cubit<DrinkingState> {
   DrinkingCubit() : super(const DrinkingState());
-  void addDrinking(Drinking drinking) {
+
+  void addDrinking(List<Drinking> drinks) {
     emit(state.copyWith(addStatus: DrinkingStatus.start));
-    state.drinksMap[drinking.id] = Drinking(
-        id: drinking.id,
-        drinkingName: drinking.drinkingName,
-        sugar: drinking.sugar,
-        ice: drinking.ice);
-    state.ids.add(drinking.id);
+    Map<String, Drinking> newDrinksMap = Map.from(state.drinksMap);
+    List<String> newIds = List.from(state.ids);
+    for (var element in drinks) {
+      newDrinksMap[element.id] = element;
+      newIds.add(element.id);
+    }
     emit(state.copyWith(
-      drinksMap: state.drinksMap,
-      ids: state.ids,
+      drinksMap: newDrinksMap,
+      ids: newIds,
       addStatus: DrinkingStatus.success,
     ));
   }
@@ -38,11 +39,13 @@ class DrinkingCubit extends Cubit<DrinkingState> {
 
   void deleteDrinking(String id) {
     emit(state.copyWith(deleteStatus: DrinkingStatus.start));
-    state.drinksMap.remove(id);
-    state.ids.remove(id);
+    Map<String, Drinking> newDrinkMap = Map.from(state.drinksMap);
+    List<String> newIds = List.from(state.ids);
+    newDrinkMap.remove(id);
+    newIds.remove(id);
     emit(state.copyWith(
-        drinksMap: state.drinksMap,
-        ids: state.ids,
+        drinksMap: newDrinkMap,
+        ids: newIds,
         deleteStatus: DrinkingStatus.success));
   }
 }

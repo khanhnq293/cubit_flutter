@@ -115,11 +115,13 @@ Future showDialogAddDrinking(
             AppButton(
                 title: "Add",
                 onPress: () {
-                  drinkingCubit.addDrinking(Drinking(
-                      id: const Uuid().v4(),
-                      drinkingName: drinking.text,
-                      sugar: 50,
-                      ice: 50));
+                  drinkingCubit.addDrinking([
+                    Drinking(
+                        id: const Uuid().v4(),
+                        drinkingName: drinking.text,
+                        sugar: 50,
+                        ice: 50)
+                  ]);
                   Navigator.pop(context);
                 })
           ],
