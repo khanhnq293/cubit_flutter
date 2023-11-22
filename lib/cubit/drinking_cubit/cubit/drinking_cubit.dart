@@ -6,15 +6,15 @@ class DrinkingCubit extends Cubit<DrinkingState> {
   DrinkingCubit() : super(const DrinkingState());
   void addDrinking(Drinking drinking) {
     emit(state.copyWith(addStatus: DrinkingStatus.start));
-    Map<String, Drinking> newDrinksMap = Map.from(state.drinksMap);
-    newDrinksMap[drinking.id] = drinking;
-    List<String> newIds = [];
-    for (int i = 0; i < newDrinksMap.length; i++) {
-      newIds.add(newDrinksMap.keys.toString());
-    }
+    state.drinksMap[drinking.id] = Drinking(
+        id: drinking.id,
+        drinkingName: drinking.drinkingName,
+        sugar: drinking.sugar,
+        ice: drinking.ice);
+    state.ids.add(drinking.id);
     emit(state.copyWith(
-      drinksMap: newDrinksMap,
-      ids: newIds,
+      drinksMap: state.drinksMap,
+      ids: state.ids,
       addStatus: DrinkingStatus.success,
     ));
   }
@@ -38,13 +38,11 @@ class DrinkingCubit extends Cubit<DrinkingState> {
 
   void deleteDrinking(String id) {
     emit(state.copyWith(deleteStatus: DrinkingStatus.start));
-    Map<String, Drinking> newDrinkMap = Map.from(state.drinksMap);
-    newDrinkMap.remove(id);
-    List<String> newIds = List.from(state.ids);
-    newIds.remove(id);
+    state.drinksMap.remove(id);
+    state.ids.remove(id);
     emit(state.copyWith(
-        drinksMap: newDrinkMap,
-        ids: newIds,
+        drinksMap: state.drinksMap,
+        ids: state.ids,
         deleteStatus: DrinkingStatus.success));
   }
 }
